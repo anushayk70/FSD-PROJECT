@@ -1,28 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --bg: #05070a;
+  --card-bg: rgba(17, 25, 40, 0.6);
+  --accent: #c084fc;
+  --blue: #38bdf8;
+  --green: #4ade80;
+  --orange: #fb923c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(192, 132, 252, 0.15) 0%, transparent 35%),
+    radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.15) 0%, transparent 35%);
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- Login Page --- */
 .login-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #0f172a;
+  display: flex; justify-content: center; align-items: center; height: 100vh;
 }
 
 .login-card {
-  background: #1e293b;
-  padding: 40px;
-  border-radius: 32px;
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  padding: 50px;
+  border-radius: 40px;
   border: 1px solid rgba(255,255,255,0.1);
+  width: 100%; max-width: 450px;
+  text-align: center;
+  position: relative;
 }
 
-.input-group {
-  display: flex;
-  gap: 10px;
+.badge {
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.1); padding: 5px 12px;
+  border-radius: 20px; font-size: 0.7rem; font-weight: 700;
 }
 
-.navbar p {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  margin-top: 5px;
+.login-card h1 {
+  font-family: 'Syne', sans-serif; font-size: 2.2rem;
+  background: linear-gradient(to right, #818cf8, #c084fc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 30px;
 }
+
+/* --- Layout --- */
+.navbar { padding: 40px 20px; text-align: center; }
+.nav-content h1 { font-family: 'Syne', sans-serif; letter-spacing: -1px; }
+.user-stats-pill {
+  display: inline-block; background: rgba(255,255,255,0.05);
+  padding: 6px 15px; border-radius: 50px; margin-top: 10px; font-size: 0.8rem;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px; max-width: 1200px; margin: 0 auto; padding: 20px;
+}
+
+/* --- Cards --- */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 30px; border: 1px solid rgba(255,255,255,0.05);
+  padding: 30px; transition: all 0.4s ease;
+  text-align: center;
+}
+
+.card:hover { transform: translateY(-10px); border-color: var(--accent); }
+
+.counter { font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800; margin: 10px 0; }
+.status-text { font-size: 1.8rem; padding: 20px 0; }
+
+.water-card .counter { color: var(--blue); }
+.steps-card .counter { color: var(--green); }
+.cal-card .counter { color: var(--orange); }
+.status-card .counter { color: var(--accent); }
+
+/* --- Forms & Buttons --- */
+input {
+  width: 100%; padding: 14px; margin: 10px 0;
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 15px; color: #fff; text-align: center;
+}
+
+.input-group { display: flex; gap: 10px; }
+
+.btn-main {
+  background: linear-gradient(90deg, #818cf8, #c084fc); color: #fff;
+  border: none; padding: 16px; border-radius: 15px; font-weight: 800; cursor: pointer;
+}
+
+.btn-action {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; padding: 10px; border-radius: 12px; cursor: pointer; margin-top: 10px; width: 100%;
+}
+
+.btn-action:hover { background: var(--accent); color: #000; }
+
+.error-msg { color: #ff4d4d; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
