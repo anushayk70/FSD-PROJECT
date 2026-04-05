@@ -2,116 +2,101 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  // User Profile States
-  const [user, setUser] = useState({ name: '', weight: '', height: '', id: '' });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState("");
+  const [page, setPage] = useState(0); 
+  const [user, setUser] = useState({ name: '', weight: '', height: '', goal: 'LOSE', bmi: 0, category: '' });
+  const [data, setData] = useState({ sips: 0, steps: 0, junk: false, sleep: false });
+  const [report, setReport] = useState({ progress: '', note: '' });
 
-  // Fitness Tracker States
-  const [glasses, setGlasses] = useState(0);
-  const [steps, setSteps] = useState(0);
-  const [burned, setBurned] = useState(0);
-  const [status, setStatus] = useState("STABLE ⚖️");
-
-  const handleLogin = (e) => {
+  const calculateHealth = (e) => {
     e.preventDefault();
-    // Logic: In the future, Java will check if this ID is unique
-    if (user.id.length < 3) {
-      setError("ID TOO SHORT, BESTIE. 💀");
-    } else {
-      setIsLoggedIn(true);
-      setError("");
-    }
+    const bmiVal = (user.weight / ((user.height / 100) ** 2)).toFixed(1);
+    let cat = "";
+    if (bmiVal < 18.5) cat = "MALNOURISHED ⚠️";
+    else if (bmiVal < 24.9) cat = "RIGHT ON TRACK ✨";
+    else cat = "OBESE 📈";
+    setUser({ ...user, bmi: bmiVal, category: cat });
+    setPage(1);
   };
 
-  const calculateFitness = () => {
-    // Harris-Benedict influenced calculation
-    const weightFactor = user.weight / 70;
-    const caloriesBurned = (steps * 0.04) * weightFactor;
-    setBurned(caloriesBurned.toFixed(2));
-
-    // Weight Trend Logic
-    if (caloriesBurned > 400) {
-      setStatus("LOSING 🔥");
-    } else if (steps < 1500 && steps > 0) {
-      setStatus("GAINING 📈");
+  const generateReport = () => {
+    const burned = (data.steps * 0.04) * (user.weight / 70);
+    let progressMsg = "";
+    if (user.goal === "LOSE") {
+      progressMsg = burned > 300 && !data.junk ? "SHREDDING IT! 🔥" : "STAY FOCUSED 🛑";
     } else {
-      setStatus("STABLE ⚖️");
+      progressMsg = burned < 200 && data.sleep ? "GAINING MASS! 💪" : "HUSTLE HARDER ⚡️";
     }
+    const notes = ["Main character energy,", "You're literally glowing,", "Absolute legend behavior,", "Built different,"];
+    const randomNote = notes[Math.floor(Math.random() * notes.length)];
+    setReport({ progress: progressMsg, note: randomNote });
+    setPage(3);
   };
 
-  // --- LOGIN SCREEN VIEW ---
-  if (!isLoggedIn) {
-    return (
-      <div className="login-screen">
-        <form className="login-card" onSubmit={handleLogin}>
-          <div className="badge">v1.0.4</div>
-          <h1>CAMPUSFIT.IO ⚡️</h1>
-          <p>Create your Athlete Profile</p>
-          
-          {error && <div className="error-msg">{error}</div>}
-          
-          <input type="text" placeholder="Full Name" onChange={(e) => setUser({...user, name: e.target.value})} required />
-          <input type="text" placeholder="Unique Student ID" onChange={(e) => setUser({...user, id: e.target.value})} required />
-          
-          <div className="input-group">
-            <input type="number" placeholder="Weight (kg)" onChange={(e) => setUser({...user, weight: e.target.value})} required />
-            <input type="number" placeholder="Height (cm)" onChange={(e) => setUser({...user, height: e.target.value})} required />
-          </div>
-          
-          <button type="submit" className="btn-main">START HUSTLE</button>
-        </form>
-      </div>
-    );
-  }
-
-  // --- MAIN DASHBOARD VIEW ---
   return (
     <div className="App">
-      <nav className="navbar">
-        <div className="nav-content">
-          <h1>WELCOME, {user.name.toUpperCase()} 🦾</h1>
-          <div className="user-stats-pill">
-            ID: {user.id} • {user.weight}kg • {user.height}cm
+      <div className="blob-bg"></div>
+
+      {page === 0 && (
+        <div className="container fade-in">
+          <form className="glass-card" onSubmit={calculateHealth}>
+            <h1 className="ultra-title">CAMPUS<span>FIT</span></h1>
+            <p className="vibe-text">AUTHENTICATE YOURSELF</p>
+            <input type="text" placeholder="NAME" onChange={(e)=>setUser({...user, name: e.target.value})} required />
+            <select onChange={(e)=>setUser({...user, goal: e.target.value})} className="nebula-select">
+              <option value="LOSE">GOAL: LOSE WEIGHT</option>
+              <option value="GAIN">GOAL: GAIN WEIGHT</option>
+            </select>
+            <div className="row">
+              <input type="number" placeholder="KG" onChange={(e)=>setUser({...user, weight: e.target.value})} required />
+              <input type="number" placeholder="CM" onChange={(e)=>setUser({...user, height: e.target.value})} required />
+            </div>
+            <button className="btn-neon">INITIALIZE →</button>
+          </form>
+        </div>
+      )}
+
+      {page === 1 && (
+        <div className="container fade-in">
+          <div className="glass-card">
+            <h2 className="section-header">THE HUSTLE</h2>
+            <div className="stat-circle-huge">
+              <div className="val-huge">{(data.sips * 0.25).toFixed(2)}L</div>
+              <button className="add-btn-neon" onClick={()=>setData({...data, sips: data.sips+1})}>+ DRINK</button>
+            </div>
+            <input type="number" className="nebula-input" placeholder="ENTER STEPS" onChange={(e)=>setData({...data, steps: e.target.value})} />
+            <button className="btn-neon" onClick={()=>setPage(2)}>VIBE CHECK →</button>
           </div>
         </div>
-      </nav>
+      )}
 
-      <div className="dashboard">
-        {/* Card 1: Water */}
-        <div className="card water-card">
-          <h3>HYDRATION</h3>
-          <div className="counter">{glasses}</div>
-          <p>GLASSES</p>
-          <button className="btn-action" onClick={() => setGlasses(glasses + 1)}>+ SIP</button>
+      {page === 2 && (
+        <div className="container fade-in">
+          <div className="glass-card">
+            <h2 className="section-header">VIBE CHECK</h2>
+            <div className="habit-stack">
+              <button className={`habit-btn-big ${data.junk ? 'on' : ''}`} onClick={()=>setData({...data, junk: !data.junk})}>ATE JUNK? 🍟</button>
+              <button className={`habit-btn-big ${data.sleep ? 'on' : ''}`} onClick={()=>setData({...data, sleep: !data.sleep})}>8H SLEEP? 😴</button>
+            </div>
+            <button className="btn-neon" onClick={generateReport}>GET MY VIBE ✨</button>
+          </div>
         </div>
+      )}
 
-        {/* Card 2: Steps */}
-        <div className="card steps-card">
-          <h3>ACTIVITY</h3>
-          <div className="counter">{steps || 0}</div>
-          <input type="number" placeholder="Steps?" onChange={(e) => setSteps(e.target.value)} />
-          <button className="btn-action" onClick={calculateFitness}>CALCULATE</button>
+      {page === 3 && (
+        <div className="container fade-in">
+          <div className="glass-card final-glow">
+            <div className="streak-badge-huge">🔥 DAY 1 STREAK</div>
+            <div className="bmi-pill-neon">{user.category} (BMI: {user.bmi})</div>
+            <h1 className="hero-status">{report.progress}</h1>
+            <p className="cheer-text">"{report.note} {user.name.toUpperCase()}!"</p>
+            <div className="bento-grid">
+              <div className="bento-item"><h4>{data.steps}</h4><p>STEPS</p></div>
+              <div className="bento-item"><h4>{(data.sips*0.25).toFixed(1)}L</h4><p>WATER</p></div>
+            </div>
+            <button className="btn-restart" onClick={()=>setPage(1)}>RESET DAY</button>
+          </div>
         </div>
-
-        {/* Card 3: Calories */}
-        <div className="card cal-card">
-          <h3>BURNED</h3>
-          <div className="counter">{burned}</div>
-          <p>KCAL TOTAL</p>
-        </div>
-
-        {/* Card 4: Weight Status */}
-        <div className="card status-card">
-          <h3>STATUS</h3>
-          <div className="counter status-text">{status}</div>
-          <p>WEIGHT TREND</p>
-        </div>
-      </div>
-
-      <button className="btn-reset" onClick={() => window.location.reload()}>
-        LOGOUT & RESET
-      </button>
+      )}
     </div>
   );
 }
