@@ -3,51 +3,47 @@ import './App.css';
 
 function App() {
   const [glasses, setGlasses] = useState(0);
-  const [steps, setSteps] = useState(0); // New state for steps
-  const [calories, setCalories] = useState(0); // New state for calories
+  const [steps, setSteps] = useState(0);
+  const [calories, setCalories] = useState(0);
+
+  const calculateBurn = () => {
+    // 1 step is roughly 0.04 calories
+    const result = steps * 0.04;
+    setCalories(result.toFixed(2));
+  };
 
   return (
     <div className="App">
       <nav className="navbar">
-        <h1>CampusFit 🎓</h1>
+        <h1>CAMPUSFIT.IO ⚡️</h1>
       </nav>
 
       <div className="dashboard">
-        {/* Water Tracker Card */}
         <div className="card water-card">
-          <h2>Hydration</h2>
+          <h3>HYDRATION 💧</h3>
           <div className="counter">{glasses}</div>
-          <p>Glasses</p>
-          <button className="btn-add" onClick={() => setGlasses(glasses + 1)}>+ Add</button>
+          <button className="btn-add" onClick={() => setGlasses(glasses + 1)}>+ ADD SIP</button>
         </div>
 
-        {/* Step Tracker Card */}
         <div className="card steps-card">
-          <h2>Activity</h2>
-          <div className="counter">{steps}</div>
-          <p>Steps Today</p>
+          <h3>ACTIVITY 👟</h3>
           <input 
             type="number" 
-            placeholder="Enter steps" 
+            placeholder="How many steps?" 
             onChange={(e) => setSteps(e.target.value)} 
           />
+          <button className="btn-calc" onClick={calculateBurn}>CALCULATE</button>
         </div>
 
-        {/* Calories Card */}
         <div className="card cal-card">
-          <h2>Burned</h2>
+          <h3>BURNED 🔥</h3>
           <div className="counter">{calories}</div>
-          <p>Calories</p>
-          <input 
-            type="number" 
-            placeholder="Enter cal" 
-            onChange={(e) => setCalories(e.target.value)} 
-          />
+          <p>KCAL TOTAL</p>
         </div>
       </div>
-      
-      <button className="btn-reset" onClick={() => {setGlasses(0); setSteps(0); setCalories(0);}}>
-        Reset All Data
+
+      <button className="btn-reset" onClick={() => {setGlasses(0); setSteps(0); setCalories(0)}}>
+        RESET DAY
       </button>
     </div>
   );
