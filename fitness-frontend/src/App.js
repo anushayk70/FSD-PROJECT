@@ -2,18 +2,9 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  // 'useState' is a React hook to store data that changes (like your water count)
   const [glasses, setGlasses] = useState(0);
-
-  // Function to add a glass of water
-  const addGlass = () => {
-    setGlasses(glasses + 1);
-  };
-
-  // Function to reset the day
-  const resetCount = () => {
-    setGlasses(0);
-  };
+  const [steps, setSteps] = useState(0); // New state for steps
+  const [calories, setCalories] = useState(0); // New state for calories
 
   return (
     <div className="App">
@@ -22,22 +13,42 @@ function App() {
       </nav>
 
       <div className="dashboard">
-        <div className="card">
-          <h2>Daily Hydration</h2>
-          <p>Goal: 8 Glasses</p>
-          <div className="water-display">
-            <span className="glass-icon">💧</span>
-            <span className="counter">{glasses}</span>
-          </div>
-          
-          <div className="button-group">
-            <button className="btn-add" onClick={addGlass}>+ Add Glass</button>
-            <button className="btn-reset" onClick={resetCount}>Reset</button>
-          </div>
+        {/* Water Tracker Card */}
+        <div className="card water-card">
+          <h2>Hydration</h2>
+          <div className="counter">{glasses}</div>
+          <p>Glasses</p>
+          <button className="btn-add" onClick={() => setGlasses(glasses + 1)}>+ Add</button>
         </div>
 
-        {/* We will add Step Counter here next! */}
+        {/* Step Tracker Card */}
+        <div className="card steps-card">
+          <h2>Activity</h2>
+          <div className="counter">{steps}</div>
+          <p>Steps Today</p>
+          <input 
+            type="number" 
+            placeholder="Enter steps" 
+            onChange={(e) => setSteps(e.target.value)} 
+          />
+        </div>
+
+        {/* Calories Card */}
+        <div className="card cal-card">
+          <h2>Burned</h2>
+          <div className="counter">{calories}</div>
+          <p>Calories</p>
+          <input 
+            type="number" 
+            placeholder="Enter cal" 
+            onChange={(e) => setCalories(e.target.value)} 
+          />
+        </div>
       </div>
+      
+      <button className="btn-reset" onClick={() => {setGlasses(0); setSteps(0); setCalories(0);}}>
+        Reset All Data
+      </button>
     </div>
   );
 }
