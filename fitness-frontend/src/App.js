@@ -6,7 +6,7 @@ function App() {
   const [user, setUser] = useState({ name: '', weight: '', height: '', goal: 'LOSE', id: '', bmi: 0, category: '' });
   const [data, setData] = useState({ sips: 0, steps: 0, junk: false, sleep: false });
   const [report, setReport] = useState({ progress: '', note: '' });
-  const [history, setHistory] = useState([]); // Stores the history from MySQL
+  const [history, setHistory] = useState([]); 
 
   // 1. REGISTER / LOGIN (Page 0)
   const calculateHealth = async (e) => {
@@ -21,14 +21,12 @@ function App() {
     };
 
     try {
-      // We try to register the user
       const response = await fetch('http://localhost:8080/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
-      // If ID exists or registration is successful, move forward
       if (response.ok || response.status === 400) {
         const bmiVal = (user.weight / ((user.height / 100) ** 2)).toFixed(1);
         let cat = bmiVal < 18.5 ? "UNDERWEIGHT ⚠️" : bmiVal < 24.9 ? "HEALTHY ✨" : "OVERWEIGHT 📈";
@@ -51,19 +49,16 @@ function App() {
     };
 
     try {
-      // SAVE today's hustle to MySQL
       await fetch('http://localhost:8080/api/users/log-day', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dailyData)
       });
 
-      // FETCH all history for this user
       const historyRes = await fetch(`http://localhost:8080/api/users/history/${user.id}`);
       const historyList = await historyRes.json();
       setHistory(historyList);
 
-      // Report UI Logic
       const burned = (data.steps * 0.04) * (user.weight / 70);
       let progressMsg = burned > 300 ? "GOAT STATUS! 🔥" : "KEEP PUSHING ⚡️";
       setReport({ progress: progressMsg, note: "Data synced to MySQL." });
@@ -127,7 +122,19 @@ function App() {
       {page === 3 && (
         <div className="container fade-in">
           <div className="glass-card final-glow">
-            <div className="streak-badge-huge">✅ RECORDS SYNCED</div>
+            <div className="streak-badge-huge">✅ DATA SYNCED</div>
+            
+            <div className="stats-grid-mini">
+              <div className="stat-card-mini">
+                <span>YOUR BMI</span>
+                <h2>{user.bmi}</h2>
+              </div>
+              <div className="stat-card-mini">
+                <span>STATUS</span>
+                <h2 style={{color: '#00f3ff'}}>{user.category}</h2>
+              </div>
+            </div>
+
             <h1 className="hero-status">{report.progress}</h1>
             
             <div className="history-box">
@@ -143,7 +150,10 @@ function App() {
               </div>
             </div>
 
-            <button className="btn-restart" onClick={()=>setPage(1)}>LOG ANOTHER DAY</button>
+            <div className="button-group">
+               <button className="btn-restart" onClick={() => setPage(1)}>LOG ANOTHER DAY</button>
+               <button className="btn-secondary" onClick={() => window.location.reload()}>RESET DEMO 🔄</button>
+            </div>
           </div>
         </div>
       )}
